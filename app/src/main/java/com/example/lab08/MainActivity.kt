@@ -24,7 +24,11 @@ class MainActivity : ComponentActivity() {
                     applicationContext,
                     TaskDatabase::class.java,
                     "task_db"
-                ).build()
+                )
+
+                //migraciones
+                .addMigrations(TaskDatabase.MIGRATION_1_2)
+                .build()
 
 
                 val taskDao = db.taskDao()
