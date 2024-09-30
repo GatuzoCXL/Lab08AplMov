@@ -24,8 +24,8 @@ class TaskViewModel(private val dao: TaskDao) : ViewModel() {
 
 
     // Función para añadir una nueva tarea
-    fun addTask(description: String) {
-        val newTask = Task(description = description)
+    fun addTask(description: String, priority: Int = 1, category: String = "") {
+        val newTask = Task(description = description, priority = priority, category = category)
         viewModelScope.launch {
             dao.insertTask(newTask)
             _tasks.value = dao.getAllTasks() // Recargamos la lista
@@ -48,6 +48,49 @@ class TaskViewModel(private val dao: TaskDao) : ViewModel() {
         viewModelScope.launch {
             dao.deleteAllTasks()
             _tasks.value = emptyList() // Vaciamos la lista en el estado
+        }
+    }
+
+    // Función para editar una tarea
+    fun updateTask(task: Task) {
+        viewModelScope.launch {
+            dao.updateTask(task)
+            _tasks.value = dao.getAllTasks() // Recargamos la lista
+        }
+    }
+
+    // Función para filtrar tareas completadas
+    fun filterCompletedTasks() {
+        viewModelScope.launch {
+            _tasks.value = dao.getCompletedTasks()
+        }
+    }
+
+    // Función para filtrar tareas pendientes
+    fun filterPendingTasks() {
+        viewModelScope.launch {
+            _tasks.value = dao.getPendingTasks()
+        }
+    }
+
+    // Función para ordenar tareas por prioridad
+    fun sortByPriority() {
+        viewModelScope.launch {
+            _tasks.value = dao.getTasksByPriority()
+        }
+    }
+
+    // Función para ordenar tareas por fecha de creación
+    fun sortByCreationDate() {
+        viewModelScope.launch {
+            _tasks.value = dao.getTasksByCreationDate()
+        }
+    }
+
+    // Función para buscar tareas por descripción
+    fun searchTasks(search: String) {
+        viewModelScope.launch {
+            _tasks.value = dao.searchTasks(search)
         }
     }
 }
